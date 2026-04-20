@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node ./scripts/sync-audio.mjs && astro dev",
+    "dev": "node ./scripts/sync-audio.mjs && npx astro dev",
     "build": "node ./scripts/sync-audio.mjs && astro build",
     "preview": "astro preview",
     "check": "NODE_OPTIONS='--max-old-space-size=12288' astro check"
@@ -16,6 +16,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
     "@types/node": "^25.5.0",
+    "concurrently": "^9.2.1",
     "typescript": "^5.9.3"
   }
 }
