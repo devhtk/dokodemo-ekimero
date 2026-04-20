@@ -64,8 +64,27 @@ const companyList: CompanyGroup[] = [...companyGrouped.entries()]
 // Get representative line for the station to show as background
 const representativeLine = relevantUsages[0]?.line || "";
 const lineImage = getLineImage(representativeLine);
+
+const description = `${station.station}駅の駅メロ・発車メロディー情報。${companyList.map(c => c.company).join("、")}などの路線で流れるメロディーを聴くことができます。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Place",
+  "name": `${station.station}駅`,
+  "description": description,
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "日本",
+    "addressRegion": "東京都" // Note: This could be dynamic if we had location data
+  }
+};
 ---
-<SiteLayout title={`${station.station}駅 — どこでも駅メロ`}>
+<SiteLayout 
+  title={`${station.station}駅 | どこでも駅メロ`} 
+  description={description}
+  ogType="place"
+  jsonLd={jsonLd}
+>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <a href="/companies">会社別</a> &gt; 
@@ -111,7 +130,7 @@ const lineImage = getLineImage(representativeLine);
                         {u.bound && <span class="badge" style="font-size: 11px;">{u.bound}</span>}
                       </div>
                       <div class="meta" style="margin-top:2px;">
-                        <img src={getLineLogo(u.line)} alt="" style="height:16px; width:auto; vertical-align:middle; margin-right:4px;" onerror="this.style.display='none'" />
+                        <img src={getLineLogo(u.line)} alt={`${u.line}のロゴ`} style="height:16px; width:auto; vertical-align:middle; margin-right:4px;" onerror="this.style.display='none'" />
                         <a href={`/lines/${stableEncode(u.line)}`} style="color: var(--link); font-weight: 600; text-decoration: underline; text-underline-offset: 4px;">
                           {u.line}
                         </a>

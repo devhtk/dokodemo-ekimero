@@ -18,7 +18,10 @@ const linesJSON = allLines.map(l => ({ line: l.line, company: l.company, station
 const companiesJSON = JSON.stringify(companies);
 ---
 
-<SiteLayout title="路線一覧 — どこでも駅メロ">
+<SiteLayout 
+  title="路線別 駅メロ一覧 | どこでも駅メロ" 
+  description="JR・地下鉄・私鉄の各路線ごとの駅メロ・発車メロディーを一覧から探せます。山手線、中央線、東京メトロなど主要路線のメロディを網羅。"
+>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <span>路線から探す</span>
@@ -98,7 +101,7 @@ const companiesJSON = JSON.stringify(companies);
       <li>
         <div style="flex: 1;">
           <div style="display:flex; align-items:center; gap:8px;">
-            <img src="/images/${encodeURIComponent(l.line)}.png" alt="" style="height:20px; width:auto; vertical-align:middle;" onerror="this.style.display='none'" border-radius: 4px />
+            <img src="/images/${encodeURIComponent(l.line)}.png" alt="${l.line}のロゴ" style="height:20px; width:auto; vertical-align:middle;" onerror="this.style.display='none'" border-radius: 4px />
             <a href="/lines/${encode(l.line)}" style="font-weight:600; color: inherit;">${l.line}</a>
           </div>
           <div class="meta" style="margin-top: 4px;">${l.company} ・ 駅 ${l.stationCount}駅 ・ 使用 ${l.usageCount}件</div>

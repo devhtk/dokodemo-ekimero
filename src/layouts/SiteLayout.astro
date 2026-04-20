@@ -3,9 +3,24 @@ type Props = {
   title: string;
   description?: string;
   searchQuery?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'music.song' | 'place';
+  canonicalURL?: string;
+  jsonLd?: any;
 };
 
-const { title, description, searchQuery } = Astro.props;
+const { 
+  title, 
+  description, 
+  searchQuery, 
+  ogImage = "/images/logo.png", 
+  ogType = "website",
+  canonicalURL = Astro.url.href,
+  jsonLd 
+} = Astro.props;
+
+const siteName = "どこでも駅メロ";
+const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
 const firebaseConfig = {
   apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY || "AIzaSyBrgf00OFxksjZuFOQxgB1qUjZmLSG7yqk",
   authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN || "dokodemo-ekimero.firebaseapp.com",
@@ -25,8 +40,31 @@ const firebaseConfig = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{title}</title>
+    <!-- Primary Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
     {description ? <meta name="description" content={description} /> : null}
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:title" content={fullTitle} />
+    {description ? <meta property="og:description" content={description} /> : null}
+    <meta property="og:image" content={new URL(ogImage, Astro.url.origin).href} />
+    <meta property="og:site_name" content={siteName} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url.href} />
+    <meta property="twitter:title" content={fullTitle} />
+    {description ? <meta property="twitter:description" content={description} /> : null}
+    <meta property="twitter:image" content={new URL(ogImage, Astro.url.origin).href} />
+
+    <!-- JSON-LD -->
+    {jsonLd && (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+    )}
     <link rel="icon" href="/images/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16" />

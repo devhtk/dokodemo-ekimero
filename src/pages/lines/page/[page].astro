@@ -61,7 +61,7 @@ const slice = data.lines.slice(start, start + PAGE_SIZE);
         <li data-item data-company={l.company}>
           <div style="flex: 1;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <img src={getLineLogo(l.line)} alt="" style="height:20px; width:auto;" onerror="this.style.display='none'" />
+              <img src={getLineLogo(l.line)} alt={`${l.line}のロゴ`} style="height:20px; width:auto;" onerror="this.style.display='none'" />
               <a href={`/lines/${stableEncode(l.line)}`} style="font-weight:600; font-size: 1em; color: inherit;">
                 {l.line}
               </a>

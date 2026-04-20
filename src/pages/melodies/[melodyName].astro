@@ -34,11 +34,28 @@ for (const u of melody.usages) {
 }
 const companyEntries = [...byCompany.entries()].sort((a, b) => a[0].localeCompare(b[0], "ja"));
 
-// Get representative line for background
 const representativeLine = melody.usages[0]?.line || "";
 const lineImage = getLineImage(representativeLine);
+
+const description = `駅メロ「${melody.name}」の再生・使用駅情報。${melody.usages.slice(0, 3).map(u => u.station).join("駅、")}駅などで使用されています。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MusicComposition",
+  "name": melody.name,
+  "description": description,
+  "audio": melody.audioUrls.map(url => ({
+    "@type": "AudioObject",
+    "contentUrl": new URL(url, Astro.url.origin).href
+  }))
+};
 ---
-<SiteLayout title={`${melody.name} — どこでも駅メロ`}>
+<SiteLayout 
+  title={`${melody.name} | どこでも駅メロ`} 
+  description={description}
+  ogType="music.song"
+  jsonLd={jsonLd}
+>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <a href="/melodies">メロディ</a> &gt; 
@@ -100,7 +117,7 @@ const lineImage = getLineImage(representativeLine);
                     <div class="panel col-6" style="display: flex; flex-direction: column;">
                       <div class="panel-pad" style="border-bottom:1px solid var(--border); display:flex; justify-content:space-between; gap:12px; align-items:center; background: rgba(0,0,0,0.01);">
                         <div style="display:flex; align-items:center; gap:8px;">
-                          <img src={getLineLogo(l.line)} alt="" style="height:20px; width:auto;" onerror="this.style.display='none'" />
+                          <img src={getLineLogo(l.line)} alt={`${l.line}のロゴ`} style="height:20px; width:auto;" onerror="this.style.display='none'" />
                           <a href={`/lines/${stableEncode(l.line)}`} style="font-weight:600; color: inherit;">{l.line}</a>
                         </div>
                         <div class="meta">{stations.length}駅</div>
