@@ -106,7 +106,49 @@ const q = (url.searchParams.get("q") ?? "").trim();
         const nQuery = norm(q);
         ["melodies", "stations", "lines"].forEach(cat => {
           const list = searchIndex[cat] || [];
-          const results = list.filter(item => norm(item.text).includes(nQuery)).slice(0, 50);
+          
+          const scored = list.map(item => {
+            let score = 0;
+            if (cat === 'stations') {
+              const nStation = norm(item.station);
+              if (nStation === nQuery) score = 1000;
+              else if (nStation.startsWith(nQuery)) score = 800;
+              else if (nStation.includes(nQuery)) score = 600;
+              else if (item.lines && item.lines.some(l => norm(l).includes(nQuery))) score = 400;
+              else if (item.companies && item.companies.some(c => norm(c) === nQuery)) score = 300;
+              else if (item.companies && item.companies.some(c => norm(c).includes(nQuery))) {
+                // If it only matches because of the company name (e.g. "東京" in "東京メトロ"), 
+                // give it a very low score so it doesn't clutter unless it's a better match elsewhere.
+                // We only count it if the query is at least 2 chars to avoid single-char noise.
+                if (nQuery.length >= 2) score = 50;
+              }
+            } else if (cat === 'lines') {
+              const nLine = norm(item.line);
+              const nCompany = norm(item.company);
+              if (nLine === nQuery) score = 1000;
+              else if (nLine.includes(nQuery)) score = 600;
+              else if (nCompany === nQuery) score = 300;
+              else if (nCompany.includes(nQuery)) {
+                if (nQuery.length >= 2) score = 50;
+              }
+            } else if (cat === 'melodies') {
+              const nName = norm(item.name);
+              if (nName === nQuery) score = 1000;
+              else if (nName.startsWith(nQuery)) score = 800;
+              else if (nName.includes(nQuery)) score = 600;
+            } else {
+              // Fallback
+              if (norm(item.text).includes(nQuery)) score = 10;
+            }
+            return { item, score };
+          });
+
+          const results = scored
+            .filter(r => r.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .map(r => r.item)
+            .slice(0, 50);
+
           const listEl = document.querySelector(`[data-results="${cat}"]`);
           const countEl = document.querySelector(`[data-count="${cat}"]`);
           if (listEl) {

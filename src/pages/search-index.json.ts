@@ -17,9 +17,11 @@ export const GET: APIRoute = async () => {
     })),
     stations: data.stations.map((s) => ({
       id: s.id,
+      station: s.station,
       company: [...new Set(s.usages.map((u) => u.company))][0] ?? "",
       line: [...new Set(s.usages.map((u) => u.line))][0] ?? "",
-      station: s.station,
+      lines: [...new Set(s.usages.map((u) => u.line))],
+      companies: [...new Set(s.usages.map((u) => u.company))],
       text: `${s.station} ${[...new Set(s.usages.map((u) => u.line))].join(" ")} ${[...new Set(s.usages.map((u) => u.company))].join(" ")}`,
       useCount: s.usages.length,
     })),

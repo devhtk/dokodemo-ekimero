@@ -110,7 +110,7 @@ const lineImage = getLineImage(representativeLine);
                           <li>
                             <div style="flex: 1;">
                               <a href={`/stations/${stableEncode(s.station)}`} style="font-weight:600;">{s.station}駅</a>
-                              <div class="meta">{s.entries.map(e => e.track ? `${e.track}番線` : "").filter(Boolean).join(", ")}</div>
+                              <div class="meta">{s.entries.map((e: any) => e.track ? `${e.track}番線` : "").filter(Boolean).join(", ")}</div>
                             </div>
                             <a class="btn" href={`/stations/${stableEncode(s.station)}`} style="font-size: 12px; padding: 4px 10px;">駅へ</a>
                           </li>
