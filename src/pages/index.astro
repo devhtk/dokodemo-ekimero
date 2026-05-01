@@ -50,24 +50,25 @@ const latestUpdates = data.usages
     ...u,
     stationName: data.stations.find(s => s.id === u.stationId)?.station || "不明な駅"
   }));
+const fullTitle = "どこでも駅メロ | 駅メロ・発車メロディーの検索・再生サイト";
 const description = "全国のJR・地下鉄・私鉄の駅メロ・発車メロディーを網羅。駅名、路線名、メロディ名から検索してその場で再生。最新の駅メロ情報や消滅した貴重な音源も収録しています。";
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "どこでも駅メロ",
-  "alternateName": ["Ekimero", "駅メロ検索"],
-  "url": "https://ekimero.com/",
+  "name": fullTitle,
+  "alternateName": ["どこでも駅メロ", "Ekimero", "駅メロ検索", "発車メロディー再生"],
+  "url": Astro.url.origin,
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://ekimero.com/search?q={search_term_string}",
+    "target": `${Astro.url.origin}/search?q={search_term_string}`,
     "query-input": "required name=search_term_string"
   },
   "description": description
 };
 ---
 <SiteLayout 
-  title="どこでも駅メロ | 駅メロ・発車メロディーの検索・再生サイト" 
+  title={fullTitle} 
   description={description}
   jsonLd={jsonLd}
 >

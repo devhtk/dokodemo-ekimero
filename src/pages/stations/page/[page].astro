@@ -30,8 +30,17 @@ for (const [k, arr] of linesByCompany.entries()) {
   arr.sort((a, b) => a.line.localeCompare(b.line, "ja"));
   linesByCompany.set(k, arr);
 }
+const fullTitle = `駅一覧（${page}/${totalPages}）| どこでも駅メロ`;
+const description = `全国の駅名から探す駅メロ一覧です。${page}ページ目（全${totalPages}ページ）。主要駅から地方の駅まで、各駅の発車メロディーを掲載。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description
+};
 ---
-<SiteLayout title={`駅一覧（${page}/${totalPages}）— どこでも駅メロ`}>
+<SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <a href="/stations">駅から探す</a> &gt;

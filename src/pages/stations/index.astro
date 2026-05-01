@@ -21,11 +21,22 @@ const stationsJSON = data.stations.slice().sort((a, b) => a.station.localeCompar
 }));
 const companiesJSON = JSON.stringify(companies);
 const linesByCompanyJSON = JSON.stringify(Object.fromEntries(linesByCompanyMap));
+
+const fullTitle = "駅別 駅メロ・発車メロディー検索 | どこでも駅メロ";
+const description = "全国の駅名から駅メロ・発車メロディーを検索できます。東京、新宿、渋谷など主要駅の音源を網羅。50音順や会社・路線別でも探せます。";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description
+};
 ---
 
 <SiteLayout 
-  title="駅別 駅メロ検索 | どこでも駅メロ" 
-  description="全国の駅名から駅メロ・発車メロディーを検索できます。東京、新宿、渋谷など主要駅の音源を網羅。50音順や会社・路線別でも探せます。"
+  title={fullTitle} 
+  description={description}
+  jsonLd={jsonLd}
 >
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 

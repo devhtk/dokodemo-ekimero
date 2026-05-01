@@ -20,15 +20,27 @@ const melodiesJSON = data.melodies.slice().sort((a, b) => a.name.localeCompare(b
   usageCount: m.usages.length,
   audioUrl: m.audioUrls[0] || null,
   audioCompany: m.usages[0]?.company || "",
-  audioLine: m.usages[0]?.line || ""
+  audioLine: m.usages[0]?.line || "",
+  hasAudio: m.hasAudio
 }));
 const companiesJSON = JSON.stringify(companies);
 const linesByCompanyJSON = JSON.stringify(Object.fromEntries(linesByCompanyMap));
+
+const fullTitle = "発車メロディー・駅メロ名から探す | どこでも駅メロ";
+const description = "「Water Crown」や「春」など、有名な駅メロ・発車メロディーの曲名から検索できます。使用されている駅や路線、会社情報も掲載。";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description
+};
 ---
 
 <SiteLayout 
-  title="発車メロディー・駅メロ名から探す | どこでも駅メロ" 
-  description="「Water Crown」や「春」など、有名な駅メロ・発車メロディーの曲名から検索できます。使用されている駅や路線、会社情報も掲載。"
+  title={fullTitle} 
+  description={description}
+  jsonLd={jsonLd}
 >
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
@@ -130,7 +142,7 @@ const linesByCompanyJSON = JSON.stringify(Object.fromEntries(linesByCompanyMap))
           <div class="meta" style="margin-top: 4px;">使用 ${m.usageCount}件</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
-          ${m.audioUrl ? `<button class="btn btn-primary" data-play data-url="${m.audioUrl}" data-title="${m.name}" data-subtitle="${m.audioCompany} / ${m.audioLine}" style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;" title="再生">▶</button>` : ''}
+          ${m.hasAudio && m.audioUrl ? `<button class="btn btn-primary" data-play data-url="${m.audioUrl}" data-title="${m.name}" data-subtitle="${m.audioCompany} / ${m.audioLine}" style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;" title="再生"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg></button>` : ''}
           <a class="btn" href="/melodies/${encode(m.name)}" style="font-size: 12px; padding: 6px 16px;">開く</a>
         </div>
       </li>

@@ -3,9 +3,18 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 // 1. Get query from URL (Server-side)
 const url = new URL(Astro.request.url);
 const q = (url.searchParams.get("q") ?? "").trim();
+const title = q ? `${q} の検索結果 | どこでも駅メロ` : "検索 | どこでも駅メロ";
+const description = q ? `「${q}」の駅メロ・発車メロディー検索結果です。` : "駅名・路線名・メロディ名から全国の駅メロ・発車メロディーを検索できます。";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SearchResultsPage",
+  "name": title,
+  "description": description
+};
 ---
 
-<SiteLayout title="検索 — どこでも駅メロ" searchQuery={q}>
+<SiteLayout title={title} description={description} searchQuery={q} jsonLd={jsonLd}>
   <div class="panel panel-pad">
     <h1 class="h1">検索</h1>
     <p class="muted" style="margin:8px 0 0 0;">
@@ -77,9 +86,9 @@ const q = (url.searchParams.get("q") ?? "").trim();
         } else if (type === 'lines') {
           inner = `<div><a href="/lines/${item.line}" style="font-weight:650;">${item.line}</a><div class="meta">${item.company} · 駅 ${item.stationCount}件</div></div><a class="btn" href="/lines/${item.line}">開く</a>`;
         } else {
-          const playBtn = item.audioUrl 
-            ? `<button class="btn btn-primary" type="button" data-play data-url="${item.audioUrl}" data-title="${item.name}" data-subtitle="検索結果">▶</button>` 
-            : `<span class="badge">音源なし</span>`;
+          const playBtn = (item.hasAudio && item.audioUrl)
+            ? `<button class="btn btn-primary" type="button" data-play data-url="${item.audioUrl}" data-title="${item.name}" data-subtitle="検索結果"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg></button>` 
+            : '';
           inner = `<div><a href="/melodies/${item.name}" style="font-weight:650;">${item.name}</a><div class="meta">使用 ${item.useCount}件</div></div><div style="display:flex;gap:8px;">${playBtn}<a class="btn" href="/melodies/${item.name}">開く</a></div>`;
         }
         return el(`<li style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--border);">${inner}</li>`);

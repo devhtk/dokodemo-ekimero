@@ -65,12 +65,13 @@ const companyList: CompanyGroup[] = [...companyGrouped.entries()]
 const representativeLine = relevantUsages[0]?.line || "";
 const lineImage = getLineImage(representativeLine);
 
-const description = `${station.station}駅の駅メロ・発車メロディー情報。${companyList.map(c => c.company).join("、")}などの路線で流れるメロディーを聴くことができます。`;
+const fullTitle = `${station.station}駅の発車メロディー・駅メロ | どこでも駅メロ`;
+const description = `${station.station}駅で流れる発車メロディー・駅メロの一覧です。${relevantUsages.length}件のメロディを掲載しています。`;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Place",
-  "name": `${station.station}駅`,
+  "name": fullTitle,
   "description": description,
   "address": {
     "@type": "PostalAddress",
@@ -80,8 +81,9 @@ const jsonLd = {
 };
 ---
 <SiteLayout 
-  title={`${station.station}駅 | どこでも駅メロ`} 
+  title={fullTitle} 
   description={description}
+  ogImage={lineImage || "/images/logo.png"}
   ogType="place"
   jsonLd={jsonLd}
 >
@@ -137,10 +139,11 @@ const jsonLd = {
                       </div>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center;">
-                      <button class="btn btn-primary" data-play data-url={u.audioUrl} data-title={u.melody} data-subtitle={`${station.station} / ${u.line}`} style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;" title="再生">▶</button>
+                      {u.hasAudio && (
+                        <button class="btn btn-primary" data-play data-url={u.audioUrl} data-title={u.melody} data-subtitle={`${station.station} / ${u.line}`} style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;" title="再生"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg></button>
+                      )}
                       <a class="btn" href={`/melodies/${stableEncode(u.melody)}`} style="font-size: 12px; padding: 4px 10px;">開く</a>
-                    </div>
-                  </li>
+                    </div>                  </li>
                 ))}
               </ul>
             </>

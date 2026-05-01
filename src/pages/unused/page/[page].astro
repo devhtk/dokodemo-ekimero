@@ -26,8 +26,18 @@ const page = Math.max(1, Number(Astro.params.page || "1") || 1);
 const totalPages = Math.max(1, Math.ceil(unusedMelodies.length / PAGE_SIZE));
 const start = (page - 1) * PAGE_SIZE;
 const slice = unusedMelodies.slice(start, start + PAGE_SIZE);
+
+const fullTitle = `未使用・消滅した駅メロ（${page}/${totalPages}）| どこでも駅メロ`;
+const description = `現在使用されていない、または廃止された駅メロ一覧です。${page}ページ目（全${totalPages}ページ）。かつて聴くことができた貴重な発車メロディーを収録。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description
+};
 ---
-<SiteLayout title={`未使用（${page}/${totalPages}）— どこでも駅メロ`}>
+<SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <div class="panel panel-pad">
     <h1 class="h1">未使用</h1>
     <p class="muted" style="margin:8px 0 0 0;">
@@ -49,10 +59,9 @@ const slice = unusedMelodies.slice(start, start + PAGE_SIZE);
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
             <button class="btn btn-primary" type="button" data-play data-url={m.audioUrls[0]} data-title={m.name} data-subtitle="未使用">
-              ▶
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>
             </button>
-          </div>
-        </li>
+          </div>        </li>
       ))}
     </ul>
   </section>

@@ -20,11 +20,13 @@ const lines = data.lines
   .filter((l) => l.company === companyName)
   .filter((l) => l.line !== "特急用ホーム" && l.line !== "未使用")
   .sort((a, b) => b.stationIds.length - a.stationIds.length);
+const linesInCompany = lines.map((l) => l.line);
 const stationIds = new Set(usages.map((u) => u.stationId));
-const melodyMap = new Map<string, { name: string; audioUrl: string; count: number }>();
+const melodyMap = new Map<string, { name: string; audioUrl: string; count: number; hasAudio: boolean }>();
 for (const u of usages) {
-  const cur = melodyMap.get(u.melodyId) ?? { name: u.melody, audioUrl: u.audioUrl, count: 0 };
+  const cur = melodyMap.get(u.melodyId) ?? { name: u.melody, audioUrl: u.audioUrl, count: 0, hasAudio: u.hasAudio };
   cur.count += 1;
+  if (u.hasAudio) cur.hasAudio = true;
   melodyMap.set(u.melodyId, cur);
 }
 const topMelodies = [...melodyMap.entries()]
@@ -39,8 +41,29 @@ const companyImageMap: Record<string, string> = {
   "東京メトロ": "/images/tokyo-metro.jpg",
 };
 const companyImage = companyImageMap[companyName];
+const fullTitle = `${companyName}の駅メロ・発車メロディー一覧 | どこでも駅メロ`;
+const description = `${companyName}の各路線・駅で使用されている駅メロ・発車メロディーの情報をまとめています。${linesInCompany.slice(0, 3).join("、")}などの路線のメロディを掲載。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description,
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": linesInCompany.map((line, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "WebPage",
+        "name": `${line}の発車メロディー`,
+        "url": new URL(`/lines/${encodeURIComponent(line)}`, Astro.url.origin).href
+      }
+    }))
+  }
+};
 ---
-<SiteLayout title={`${companyName} — どこでも駅メロ`}>
+<SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <a href="/companies">会社別</a> &gt; 
@@ -101,7 +124,9 @@ const companyImage = companyImageMap[companyName];
               <div class="meta" style="margin-top:2px;">使用 {m.count}件</div>
             </div>
             <div style="display:flex; gap:8px; align-items:center;">
-              <button class="btn btn-primary" data-play data-url={m.audioUrl} data-title={m.name} data-subtitle={companyName} style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;" title="再生">▶</button>
+              {m.hasAudio && (
+                <button class="btn btn-primary" data-play data-url={m.audioUrl} data-title={m.name} data-subtitle={companyName} style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;" title="再生"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg></button>
+              )}
               <a class="btn" href={`/melodies/${stableEncode(m.name)}`} style="font-size: 12px; padding: 4px 10px;">開く</a>
             </div>
           </li>

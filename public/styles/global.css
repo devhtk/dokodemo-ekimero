@@ -339,8 +339,13 @@ a:hover {
   transform: scale(0.98);
 }
 
-.btn:hover {
-  background: rgba(17, 24, 39, 0.04);
+.btn svg {
+  display: block;
+  pointer-events: none;
+}
+
+.btn-primary svg {
+  margin: 0;
 }
 
 .btn-primary {

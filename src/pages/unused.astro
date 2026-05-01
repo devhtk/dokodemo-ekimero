@@ -18,10 +18,17 @@ const page = 1;
 const totalPages = Math.max(1, Math.ceil(unusedMelodies.length / PAGE_SIZE));
 const slice = unusedMelodies.slice(0, PAGE_SIZE);
 
-const lineImage = getLineImage("未使用");
-const lineLogo = getLineLogo("未使用");
+const fullTitle = "未使用・消滅した駅メロ・発車メロディー一覧 | どこでも駅メロ";
+const description = "現在使用されていない、または廃止された駅メロ・発車メロディーの一覧です。かつて駅で流れていた懐かしの音源を再生できます。";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description
+};
 ---
-<SiteLayout title="未使用・消滅メロディ — どこでも駅メロ">
+<SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <span>未使用・消滅</span>
@@ -49,7 +56,7 @@ const lineLogo = getLineLogo("未使用");
             </a>
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
-            {m.audioUrls[0] && (
+            {m.hasAudio && m.audioUrls[0] && (
               <button
                 class="btn btn-primary"
                 type="button"
@@ -60,7 +67,7 @@ const lineLogo = getLineLogo("未使用");
                 style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;"
                 title="再生"
               >
-                ▶
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>
               </button>
             )}
             <a class="btn" href={`/unused/${stableEncode(m.name)}`} style="font-size: 12px; padding: 6px 16px;">開く</a>

@@ -37,12 +37,13 @@ const companyEntries = [...byCompany.entries()].sort((a, b) => a[0].localeCompar
 const representativeLine = melody.usages[0]?.line || "";
 const lineImage = getLineImage(representativeLine);
 
-const description = `駅メロ「${melody.name}」の再生・使用駅情報。${melody.usages.slice(0, 3).map(u => u.station).join("駅、")}駅などで使用されています。`;
+const fullTitle = `駅メロ「${melody.name}」を聴く・再生 | どこでも駅メロ`;
+const description = `駅メロ「${melody.name}」の再生・詳細情報。${melody.usages.length}件の使用事例（駅・路線）を掲載しています。`;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "MusicComposition",
-  "name": melody.name,
+  "name": fullTitle,
   "description": description,
   "audio": melody.audioUrls.map(url => ({
     "@type": "AudioObject",
@@ -51,8 +52,9 @@ const jsonLd = {
 };
 ---
 <SiteLayout 
-  title={`${melody.name} | どこでも駅メロ`} 
+  title={fullTitle} 
   description={description}
+  ogImage={lineImage || "/images/logo.png"}
   ogType="music.song"
   jsonLd={jsonLd}
 >
@@ -73,19 +75,21 @@ const jsonLd = {
       <div class="meta" style="color:rgba(255,255,255,0.9); margin-top:8px; font-weight: 500;">
         使用 {melody.usages.length}件
       </div>
-      <div style="margin-top:24px;">
-        <button
-          class="btn"
-          type="button"
-          data-play
-          data-url={melody.audioUrls[0]}
-          data-title={melody.name}
-          data-subtitle="メロディ"
-          style="padding: 8px 24px; font-size: 20px; background: #fff; color: var(--accent); border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"
-        >
-          ▶
-        </button>
-      </div>
+      {melody.hasAudio && (
+        <div style="margin-top:24px;">
+          <button
+            class="btn"
+            type="button"
+            data-play
+            data-url={melody.audioUrls[0]}
+            data-title={melody.name}
+            data-subtitle="メロディ"
+            style="padding: 8px 24px; font-size: 20px; background: #fff; color: var(--accent); border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      )}
     </div>
   </div>
 

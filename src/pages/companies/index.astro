@@ -20,9 +20,17 @@ const companies = [...map.entries()]
     usageCount: v.usageCount,
     logo: companyLogo(name),
   }))
-  .sort((a, b) => b.usageCount - a.usageCount);
----
-<SiteLayout title="会社別 — どこでも駅メロ">
+  const fullTitle = "鉄道会社別 駅メロ・発車メロディー一覧 | どこでも駅メロ";
+  const description = "全国の鉄道会社ごとに、駅メロ・発車メロディーをまとめて確認できます。JR、地下鉄、私鉄各社の主要路線のメロディを網羅。";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": fullTitle,
+    "description": description
+  };
+  ---
+  <SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <div class="panel panel-pad">
     <h1 class="h1">会社別</h1>
     <p class="muted" style="margin-top:8px;">鉄道会社ごとに、路線・駅・メロディをまとめて確認できます。</p>

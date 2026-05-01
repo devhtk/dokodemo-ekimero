@@ -14,13 +14,28 @@ const allLines = data.lines.slice().sort((a, b) => {
   if (sc !== 0) return sc;
   return a.line.localeCompare(b.line, "ja");
 });
-const linesJSON = allLines.map(l => ({ line: l.line, company: l.company, stationCount: l.stationIds.length, usageCount: l.usages.length }));
+const linesJSON = allLines.map((l) => ({
+  line: l.line,
+  company: l.company,
+  stationCount: l.stationIds.length,
+  usageCount: l.usages.length,
+}));
 const companiesJSON = JSON.stringify(companies);
+const fullTitle = "路線別 駅メロ一覧 | どこでも駅メロ";
+const description = "JR・地下鉄・私鉄の各路線ごとの駅メロ・発車メロディーを一覧から探せます。山手線、中央線、東京メトロなど主要路線のメロディを網羅。";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description
+};
 ---
 
 <SiteLayout 
-  title="路線別 駅メロ一覧 | どこでも駅メロ" 
-  description="JR・地下鉄・私鉄の各路線ごとの駅メロ・発車メロディーを一覧から探せます。山手線、中央線、東京メトロなど主要路線のメロディを網羅。"
+  title={fullTitle} 
+  description={description}
+  jsonLd={jsonLd}
 >
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 

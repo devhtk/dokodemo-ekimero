@@ -30,8 +30,18 @@ const page = Math.max(1, Number(Astro.params.page || "1") || 1);
 const totalPages = Math.max(1, Math.ceil(data.melodies.length / PAGE_SIZE));
 const start = (page - 1) * PAGE_SIZE;
 const slice = data.melodies.slice(start, start + PAGE_SIZE);
+
+const fullTitle = `メロディ一覧（${page}/${totalPages}）| どこでも駅メロ`;
+const description = `登録されている駅メロ・発車メロディーの曲名一覧です。${page}ページ目（全${totalPages}ページ）。有名な曲からマニアックな曲まで幅広く収録。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description
+};
 ---
-<SiteLayout title={`メロディ一覧（${page}/${totalPages}）— どこでも駅メロ`}>
+<SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <a href="/melodies">メロディから探す</a> &gt;
@@ -73,9 +83,11 @@ const slice = data.melodies.slice(start, start + PAGE_SIZE);
             <div class="meta">使用 {m.usages.length}件 · 音源 {m.audioUrls.length}件</div>
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
-            <button class="btn btn-primary" type="button" data-play data-url={m.audioUrls[0]} data-title={m.name} data-subtitle={`${m.usages[0]?.company || ""} / ${m.usages[0]?.line || ""}`}>
-              ▶
-            </button>
+            {m.hasAudio && (
+              <button class="btn btn-primary" type="button" data-play data-url={m.audioUrls[0]} data-title={m.name} data-subtitle={`${m.usages[0]?.company || ""} / ${m.usages[0]?.line || ""}`}>
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+            )}
             <a class="btn" href={`/melodies/${m.name}`}>開く</a>
           </div>
         </li>

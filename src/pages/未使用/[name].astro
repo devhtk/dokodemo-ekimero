@@ -17,8 +17,21 @@ const melody = data.melodies.find((m) => m.name === name);
 if (!melody) throw new Error(`Melody not found: ${name}`);
 
 const melodyImage = getMelodyImage(melody.name);
+const fullTitle = `駅メロ「${melody.name}」（未使用・消滅）を聴く | どこでも駅メロ`;
+const description = `駅メロ「${melody.name}」の再生・詳細情報。現在は使用されていない、または廃止された貴重な発車メロディーです。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MusicComposition",
+  "name": fullTitle,
+  "description": description,
+  "audio": melody.audioUrls.map(url => ({
+    "@type": "AudioObject",
+    "contentUrl": new URL(url, Astro.url.origin).href
+  }))
+};
 ---
-<SiteLayout title={`${melody.name}（未使用）— どこでも駅メロ`}>
+<SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <!-- Hero Section with Player -->
   <div class="hero" style="position:relative;margin:-24px -24px 24px -24px;background:rgba(0,0,0,0.5);overflow:hidden;border-radius:16px;padding-top:24px;margin-top:0;">
     {melodyImage && (
@@ -28,19 +41,21 @@ const melodyImage = getMelodyImage(melody.name);
     <div class="panel-pad" style="position:relative;z-index:2;padding:40px 24px;text-align:center;">
       <h1 class="h1" style="margin:0;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);">{melody.name}</h1>
       <div class="meta" style="color:rgba(255,255,255,0.8);margin-top:8px;">未使用</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
-        <button
-          class="btn btn-primary"
-          type="button"
-          data-play
-          data-url={melody.audioUrls[0]}
-          data-title={melody.name}
-          data-subtitle="未使用"
-          style="background:#fff;color:#000;font-weight:650;"
-        >
-          ▶
-        </button>
-      </div>
+      {melody.hasAudio && (
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
+          <button
+            class="btn btn-primary"
+            type="button"
+            data-play
+            data-url={melody.audioUrls[0]}
+            data-title={melody.name}
+            data-subtitle="未使用"
+            style="background:#fff;color:#000;font-weight:650;"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      )}
     </div>
   </div>
 </SiteLayout>

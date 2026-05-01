@@ -30,12 +30,20 @@ const guidelines = [
   "なお、許可を得るためでない場合、提供者様への直接のお問い合わせはご遠慮ください。",
   "当サイトのコンテンツ（音声など）をSNS等に無断で投稿することはご遠慮ください。",
   "サイトの利用にあたって、音声やコンテンツを不適切な目的（誹謗中傷など）で使用することはお控えください。",
-  "当サイトは非営利目的で運営しており、収益化の計画は一切ございません。",
-  "音声ファイルが存在しない場合や、音源・駅のメロディーが違う場合がございます。ご注意ください。",
+  "当サイトは非営利目的で運営しており、収益化の計画は一切ございません。"
 ];
----
+const fullTitle = "素材提供・利用規約 | どこでも駅メロ";
+  const description = "どこでも駅メロの素材提供者様一覧および利用規約です。音源のライセンスやサイトの運営方針について掲載しています。";
 
-<SiteLayout title="素材提供・利用規約 — どこでも駅メロ">
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": fullTitle,
+    "description": description
+  };
+  ---
+
+  <SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt;
     <span>素材提供・利用規約</span>

@@ -38,8 +38,26 @@ const melodyEntries: { melody: Melody; count: number }[] = [...melodiesUsed.entr
 
 const lineImage = getLineImage(line.line);
 const lineLogo = getLineLogo(line.line);
+const fullTitle = `${line.line}の発車メロディー・駅メロ一覧 | どこでも駅メロ`;
+const description = `${line.line}の各駅で使用されている駅メロ・発車メロディーの一覧です。${stations.slice(0, 3).map(s => s.station).join("駅、")}駅などの音源を再生できます。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": fullTitle,
+  "description": description,
+  "itemListElement": stations.map((s, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "item": {
+      "@type": "Place",
+      "name": `${s.station}駅`,
+      "url": new URL(`/stations/${encodeURIComponent(s.station)}`, Astro.url.origin).href
+    }
+  }))
+};
 ---
-<SiteLayout title={`${line.line} — どこでも駅メロ`}>
+<SiteLayout title={fullTitle} description={description} ogImage={lineImage || "/images/logo.png"} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <a href="/lines">路線</a> &gt; 
@@ -99,7 +117,9 @@ const lineLogo = getLineLogo(line.line);
               <div class="meta" style="margin-top:2px;">使用 {count}件</div>
             </div>
             <div style="display:flex; gap:8px; align-items:center;">
-              <button class="btn btn-primary" data-play data-url={melody.audioUrls[0]} data-title={melody.name} data-subtitle={`${line.company} / ${line.line}`} style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;" title="再生">▶</button>
+              {melody.hasAudio && (
+                <button class="btn btn-primary" data-play data-url={melody.audioUrls[0]} data-title={melody.name} data-subtitle={`${line.company} / ${line.line}`} style="padding: 4px 8px; font-size: 14px; font-weight: 600; min-width: auto;" title="再生"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg></button>
+              )}
               <a class="btn" href={`/melodies/${stableEncode(melody.name)}`} style="font-size: 12px; padding: 4px 10px;">開く</a>
             </div>
           </li>

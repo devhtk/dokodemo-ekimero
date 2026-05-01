@@ -31,6 +31,7 @@ export const GET: APIRoute = async () => {
       text: m.name,
       useCount: m.usages.length,
       audioUrl: m.audioUrls[0] ?? null,
+      hasAudio: m.hasAudio,
     })),
   };
 

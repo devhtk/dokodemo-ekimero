@@ -131,6 +131,9 @@ function getPlayerState() {
   return state;
 }
 
+const PLAY_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>`;
+const PAUSE_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+
 function updateUI() {
   const { audio, currentButton } = getPlayerState();
   const isPlaying = !audio.paused;
@@ -143,10 +146,10 @@ function updateUI() {
       (buttonUrl && audio.src && normalizeUrl(buttonUrl) === audio.src);
 
     if (isCurrent) {
-      btn.textContent = isPlaying ? "⏸" : "▶";
+      btn.innerHTML = isPlaying ? PAUSE_ICON : PLAY_ICON;
       btn.setAttribute("data-playing", String(isPlaying));
     } else {
-      btn.textContent = "▶";
+      btn.innerHTML = PLAY_ICON;
       btn.removeAttribute("data-playing");
     }
   });

@@ -22,8 +22,21 @@ const unusedUsages = melody.usages.filter((u) => u.station === "未使用" || u.
 if (!unusedUsages.length) throw new Error(`Melody has no unused usages: ${melodyName}`);
 
 const lineImage = getLineImage("未使用");
+const fullTitle = `駅メロ「${melody.name}」（未使用・消滅）を聴く | どこでも駅メロ`;
+const description = `駅メロ「${melody.name}」の再生・詳細情報。現在は使用されていない、または廃止された貴重な発車メロディーです。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MusicComposition",
+  "name": fullTitle,
+  "description": description,
+  "audio": melody.audioUrls.map(url => ({
+    "@type": "AudioObject",
+    "contentUrl": new URL(url, Astro.url.origin).href
+  }))
+};
 ---
-<SiteLayout title={`${melody.name} — どこでも駅メロ`}>
+<SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <a href="/unused">未使用・消滅</a> &gt; 
@@ -41,20 +54,22 @@ const lineImage = getLineImage("未使用");
       <div class="meta" style="color:rgba(255,255,255,0.9); margin-top:8px; font-weight: 500;">
         未使用・消滅
       </div>
-      <div style="margin-top:24px;">
-        <button
-          class="btn"
-          type="button"
-          data-play
-          data-url={melody.audioUrls[0]}
-          data-title={melody.name}
-          data-subtitle="未使用・消滅"
-          style="padding: 8px 24px; font-size: 20px; background: #fff; color: var(--accent); border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"
-        >
-          ▶
-        </button>
+      {melody.hasAudio && (
+        <div style="margin-top:24px;">
+          <button
+            class="btn"
+            type="button"
+            data-play
+            data-url={melody.audioUrls[0]}
+            data-title={melody.name}
+            data-subtitle="未使用・消滅"
+            style="padding: 8px 24px; font-size: 20px; background: #fff; color: var(--accent); border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      )}
       </div>
-    </div>
   </div>
 
   <div class="grid">

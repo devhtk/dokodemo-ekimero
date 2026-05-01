@@ -112,9 +112,18 @@ const historyData = [
     ]
   }
 ];
----
+const fullTitle = "更新履歴 | どこでも駅メロ";
+  const description = "どこでも駅メロの更新内容、機能追加、データ更新の履歴です。最新の駅メロ追加情報などを掲載しています。";
 
-<SiteLayout title="更新履歴 — どこでも駅メロ" description="どこでも駅メロの更新内容、機能追加、データ更新の履歴です。">
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": fullTitle,
+    "description": description
+  };
+  ---
+
+  <SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt;
     <span>更新履歴</span>

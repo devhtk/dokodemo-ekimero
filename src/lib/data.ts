@@ -25,6 +25,7 @@ export type Usage = {
   lineId: string;
   stationId: string;
   melodyId: string;
+  hasAudio: boolean;
 };
 
 export type Line = {
@@ -47,6 +48,7 @@ export type Melody = {
   audioUrls: string[];
   fileNormalizedList: string[];
   usages: Usage[];
+  hasAudio: boolean;
 };
 
 export type UnusedAudio = {
@@ -104,6 +106,7 @@ export async function loadDataModel(repoRoot = process.cwd()): Promise<DataModel
     const fallbackMelodyName = `[unknown] ${path.basename(fileNormalized, path.extname(fileNormalized))}`;
     const melodySafe = melodyName.length ? melodyName : fallbackMelodyName;
     const mid = stableEncode(melodySafe);
+    const hasAudio = audioOnDisk.has(path.basename(fileNormalized));
     return {
       company: r.company,
       line: r.line,
@@ -117,6 +120,7 @@ export async function loadDataModel(repoRoot = process.cwd()): Promise<DataModel
       lineId: lid,
       stationId: sid,
       melodyId: mid,
+      hasAudio,
     };
   });
 
@@ -160,8 +164,10 @@ export async function loadDataModel(repoRoot = process.cwd()): Promise<DataModel
         audioUrls: [],
         fileNormalizedList: [],
         usages: [],
+        hasAudio: false,
       } satisfies Melody);
     melodyEntry.usages.push(u);
+    if (u.hasAudio) melodyEntry.hasAudio = true;
     if (!melodyEntry.audioUrls.includes(u.audioUrl)) melodyEntry.audioUrls.push(u.audioUrl);
     if (!melodyEntry.fileNormalizedList.includes(u.fileNormalized))
       melodyEntry.fileNormalizedList.push(u.fileNormalized);

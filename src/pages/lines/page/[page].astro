@@ -32,8 +32,18 @@ const page = Math.max(1, Number(Astro.params.page || "1") || 1);
 const totalPages = Math.max(1, Math.ceil(data.lines.length / PAGE_SIZE));
 const start = (page - 1) * PAGE_SIZE;
 const slice = data.lines.slice(start, start + PAGE_SIZE);
+
+const fullTitle = `路線一覧（${page}/${totalPages}）| どこでも駅メロ`;
+const description = `全国の鉄道・路線の駅メロ一覧です。${page}ページ目（全${totalPages}ページ）。山手線や中央線など、各路線の発車メロディーを掲載。`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": fullTitle,
+  "description": description
+};
 ---
-<SiteLayout title={`路線一覧（${page}/${totalPages}）— どこでも駅メロ`}>
+<SiteLayout title={fullTitle} description={description} jsonLd={jsonLd}>
   <nav class="breadcrumb meta" style="margin-bottom: 16px;">
     <a href="/">ホーム</a> &gt; 
     <a href="/lines">路線から探す</a> &gt;
